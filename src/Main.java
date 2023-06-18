@@ -1,13 +1,10 @@
 import java.util.*;
 
+/**
+ * Todos: print phấn màu (nếu rảnh)
+ */
 public class Main {
     static Scanner scanner = new Scanner(System.in);
-
-    // Danh sách các số tương ứng với các chức năng chính trong menu
-    static final List<Integer> mainFunctionIndiceList = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
-
-
 
     public static void main(String[] args) {
         /**
@@ -32,11 +29,10 @@ public class Main {
                     "\n9. Chuong trinh do vui dua tren slang word" +
                     "\n10. Chuong trinh do vui dua tren definition" +
                     "\n0. Thoat chuong trinh");
-            // Khởi tạo danh sách số đại diện các chức năng tương ứng
-            ArrayList<Integer> mainFunctionIndices = new ArrayList<>();
-            mainFunctionIndices.addAll(mainFunctionIndiceList);
+            // Danh sách các số tương ứng với các chức năng chính trong menu
+            ArrayList<Integer> mainFunctionIndices = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
-//            System.out.print("Nhap lua chon cua ban: ");
+            // Cho user nhập lựa chọn và xử lý
             userOption = HandleUserInput.getUserInput(mainFunctionIndices);
 
             switch (userOption) {
@@ -45,40 +41,18 @@ public class Main {
                     break;
                 case 2:
                     slangApp.searchSlangWordsByDefinition();
-//
-//                    System.out.println("Cac slang tuong ung voi dinh nghia " + userSearchedDefinition + "la: slang1 slang2 slang3");
                     break;
                 case 3:
                     slangApp.showHistory();
-//                    System.out.println("Lich su tra cuu cua ban: ");
-//                    System.out.println("slang1 - definition1\nslang2 - definition2\ndefinition1 - slang1 slang 2 slang3");
                     break;
                 case 4:
-                    /**
-                     * Chức năng add 1 slang words mới. Nếu slang words trùng thì thông báo cho người
-                     * dùng, confirm có overwrite hay duplicate ra 1 slang word mới.
-                     */
-
-//                    slangApp.add();
-//                    System.out.print("Nhap slang can them: ");
-//                    String addedSlang = scanner.nextLine();
-//                    System.out.print("Nhap dinh nghia: ");
-//                    String addedDefinition = scanner.nextLine();
-//
-//                    boolean addResult = slangDict.addSlang(addedSlang,Arrays.asList(addedDefinition));
-//                    if(addResult){
-//                        System.out.println("Da them slang "+ addedSlang + " thanh cong.");
-//                    }
-//                    System.out.println("Slang " + addedSlang + " da ton tai, ban muon ghi de hay nhan ban ra 1 slang moi?\n1.Ghi de (overwrite)\n2.Nhan ban (duplicate)");
-//                        int addedOption = scanner.nextInt();
-
-//                        System.out.println("Cac slang tuong ung voi dinh nghia " + userSearchedDefinition + "la: slang1 slang2 slang3");
+                    slangApp.addSlangWord();
                     break;
                 case 5:
-//                    slangDict.printSlang();
+                    slangApp.updateSlangWord();
                     break;
                 case 6:
-                    System.out.println("666");
+                    slangApp.deleteSlangWord();
                     break;
                 case 7:
                     System.out.println("777");
@@ -90,7 +64,7 @@ public class Main {
                     System.out.println("999");
                     break;
                 case 10:
-                    System.out.println("101010");
+                    slangApp.printSlangWords();
                     break;
                 case 0:
                     System.out.println("Xin cam on. Hen gap lai.");
