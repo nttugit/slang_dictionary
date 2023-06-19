@@ -1,8 +1,5 @@
 import java.util.*;
 
-/**
- * Todos: print phấn màu (nếu rảnh)
- */
 public class Main {
     static Scanner scanner = new Scanner(System.in);
 
@@ -14,9 +11,14 @@ public class Main {
          *    + not a supported function
          *    + viet 1 ham cho user nhap, try catch trong do
          */
-        SlangDictionaryApp slangApp = new SlangDictionaryApp();
+        String storageFileName = "src/slang.txt";
+
+        SlangDictionaryApp slangApp = new SlangDictionaryApp(storageFileName);
+        MiniGame miniGame = new MiniGame();
+
         int userOption = 0;
         do {
+
             System.out.println("\n===== SLANG DICTIONARY =====" +
                     "\n1. Tim kiem theo slang word" +
                     "\n2. Tim kiem theo tu khoa co trong definition" +
@@ -55,13 +57,13 @@ public class Main {
                     slangApp.deleteSlangWord();
                     break;
                 case 7:
-                    System.out.println("777");
+                    slangApp.resetToOriginalDictionary();
                     break;
                 case 8:
-                    System.out.println("888");
+                    slangApp.randomASlangWord();
                     break;
                 case 9:
-                    System.out.println("999");
+                    miniGame.startMiniGameOne();
                     break;
                 case 10:
                     slangApp.printSlangWords();
@@ -72,7 +74,6 @@ public class Main {
                 default:
                     break;
             }
-
         } while (userOption != 0);
     }
 }

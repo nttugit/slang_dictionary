@@ -1,69 +1,65 @@
 import java.util.*;
 
-
-/**
- * todos: thêm vòng lặp cho userOption câu 4
- */
-
 public class SlangDictionaryApp {
+
     static Scanner scanner = new Scanner(System.in);
     private SlangDictionary slangDict;
 
-    public SlangDictionaryApp() {
+    public SlangDictionaryApp(String storageFileName) {
         // todo: thêm đường dẫn file khởi tạo ở đây
-        this.slangDict = new SlangDictionary();
+        this.slangDict = new SlangDictionary(storageFileName);
     }
 
     public void printSlangWords() {
         for (Map.Entry<String, ArrayList<String>> entry : this.slangDict.getData().entrySet()) {
-            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+            ColorPrinter.printlnGreenText(entry.getKey() + " - " + entry.getValue());
         }
     }
 
-    public void printListWithOrder(List<String> list) {
+    public void printListInOrder(List<String> list) {
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + ". " + list.get(i));
+            ColorPrinter.printlnGreenText((i + 1) + ". " + list.get(i));
         }
     }
 
     // 1. Tìm kiếm theo slang word.
     public void searchSlangWord() {
-        System.out.print("Nhap slang ban muon tim kiem: ");
+        ColorPrinter.printGreenText("Nhap slang ban muon tim kiem (phan biet chu hoa va chu thuong): ");
         String slang = scanner.nextLine();
 
         List<String> result = slangDict.search(slang);
         if (result != null) {
-            System.out.println("Cac dinh nghia cho slang word \"" + slang + "\":");
-            printListWithOrder(result);
+            ColorPrinter.printlnGreenText("Cac dinh nghia cho slang word \"" + slang + "\":");
+            printListInOrder(result);
             slangDict.saveHistory(slang);
         } else {
-            System.out.println("Khong tim thay dinh nghia cua slang word: " + slang + ".");
+            ColorPrinter.printlnYellowText("Khong tim thay dinh nghia nao ung voi slang word: \"" + slang + "\".");
         }
     }
 
     // 2. Tìm kiếm theo definition, hiển thị ra tất cả các slang words mà trong defintion có chứa keyword gõ vào.
     public void searchSlangWordsByDefinition() {
-        System.out.print("Nhap tu khoa dinh nghia cua slang: ");
+        ColorPrinter.printGreenText("Nhap tu khoa thuoc dinh nghia cua slang: ");
         String keyword = scanner.nextLine();
         List<String> result = slangDict.searchSlangByDefinition(keyword);
         if (result.size() > 0) {
-            System.out.println("Cac slang trung voi tu khoa \"" + keyword + "\" la:");
-            printListWithOrder(result);
+            ColorPrinter.printlnGreenText("Cac slang trung voi tu khoa \"" + keyword + "\" la:");
+            printListInOrder(result);
         } else {
-            System.out.println("Khong co slang nao phu hop voi tu khoa \"" + keyword + "\"");
+            ColorPrinter.printlnYellowText("Khong co slang nao phu hop voi tu khoa \"" + keyword + "\"");
         }
     }
 
     //  3. Hiển thị history, danh sách các slang word đã tìm kiếm.
     public void showHistory() {
-        System.out.println("Cac slang ban da tim kiem:");
+        ColorPrinter.printlnGreenText("Cac slang ban da tim kiem:");
         List<String> history = slangDict.getHistory();
         // Review
 //        Collections.reverse(history);
         if (history.size() > 0) {
-            printListWithOrder(history);
+            printListInOrder(history);
         } else {
-            System.out.println("Lich su rong. Ban chua tim kiem slang nao.");
+            ColorPrinter.printlnGreenText("Lich su rong. Ban chua tim kiem slang nao.");
         }
     }
 
@@ -72,16 +68,16 @@ public class SlangDictionaryApp {
     public void addSlangWord() {
         // Kiểm tra tồn tại, overwrite hoặc duplicate
         try {
-            System.out.print("Nhap slang word can them: ");
+            ColorPrinter.printGreenText("Nhap slang word can them: ");
             String addedSlang = scanner.nextLine();
-            System.out.print("Nhap dinh nghia: ");
+            ColorPrinter.printGreenText("Nhap dinh nghia: ");
             String addedDefinition = scanner.nextLine();
             boolean existingSlang = slangDict.isExistingSlang(addedSlang);
 
-            ArrayList<Integer> addedSlangFunctionIndices = new ArrayList<>(Arrays.asList(0,1,2));
+            ArrayList<Integer> addedSlangFunctionIndices = new ArrayList<>(Arrays.asList(0, 1, 2));
 
             if (existingSlang) {
-                System.out.println("Slang word \"" + addedSlang + "\" da ton tai. " +
+                ColorPrinter.printlnGreenText("Slang word \"" + addedSlang + "\" da ton tai. " +
                         "\n  + Bam phim 1 de ghi de (overwrite)." +
                         "\n  + Bam phim 2 de tao them mot dinh nghia moi cho slang (duplicate)" +
                         "\n  + Bam phim 0 de huy thao tac");
@@ -102,7 +98,7 @@ public class SlangDictionaryApp {
                 this.slangDict.add(addedSlang, new ArrayList<>(Arrays.asList(addedDefinition)));
             }
         } catch (Exception e) {
-            System.out.println("Them that bai. Vui long thu lai.");
+            ColorPrinter.printlnRedText("Them that bai. Vui long thu lai.");
             e.printStackTrace();
         }
     }
@@ -110,35 +106,35 @@ public class SlangDictionaryApp {
     //5. Chức năng edit 1 slang word.
     public void updateSlangWord() {
         try {
-            System.out.print("Nhap slang word can chinh sua: ");
+            ColorPrinter.printGreenText("Nhap slang word can chinh sua: ");
             String updatedSlang = scanner.nextLine();
             boolean existingSlang = slangDict.isExistingSlang(updatedSlang);
 
             if (!existingSlang) {
-                System.out.println("Slang word khong ton tai.");
+                ColorPrinter.printlnYellowText("Slang word khong ton tai.");
             } else {
                 System.out.print("Nhap dinh nghia moi: ");
                 String updatedDefinition = scanner.nextLine();
                 this.slangDict.add(updatedSlang, new ArrayList<>(Arrays.asList(updatedDefinition)));
             }
         } catch (Exception e) {
-            System.out.println("Cap nhat that bai. Vui long thu lai.");
+            ColorPrinter.printlnRedText("Cap nhat that bai. Vui long thu lai.");
             e.printStackTrace();
         }
     }
 
-//            6. Chức năng delete 1 slang word. Confirm trước khi xoá.
-    public void deleteSlangWord(){
+    //            6. Chức năng delete 1 slang word. Confirm trước khi xoá.
+    public void deleteSlangWord() {
         try {
-            System.out.print("Nhap slang word can xoa: ");
+            ColorPrinter.printGreenText("Nhap slang word can xoa: ");
             String deletedSlang = scanner.nextLine();
             boolean existingSlang = slangDict.isExistingSlang(deletedSlang);
 
             if (!existingSlang) {
-                System.out.println("Slang word khong ton tai.");
+                ColorPrinter.printlnYellowText("Slang word khong ton tai.");
             } else {
-                ArrayList<Integer> deletedSlangFunctionIndices = new ArrayList<>(Arrays.asList(0,1));
-                System.out.println("Ban co chac chan muon xoa slang word \"" + deletedSlang + "\"?. " +
+                ArrayList<Integer> deletedSlangFunctionIndices = new ArrayList<>(Arrays.asList(0, 1));
+                ColorPrinter.printlnGreenText("Ban co chac chan muon xoa slang word \"" + deletedSlang + "\"?. " +
                         "\n  + Bam phim 1 de ghi de xac nhan xoa." +
                         "\n  + Bam phim 0 de huy thao tac");
                 int userOption = HandleUserInput.getUserInput(deletedSlangFunctionIndices);
@@ -147,21 +143,98 @@ public class SlangDictionaryApp {
                         break;
                     case 1:
                         boolean deletedResult = this.slangDict.deleteSlangWord(deletedSlang);
-                        System.out.println("Xoa slang word \"" + deletedSlang + "\"" + (deletedResult ? " thanh cong." : " that bai."));
+                        ColorPrinter.printlnGreenText("Xoa slang word \"" + deletedSlang + "\"" + (deletedResult ? " thanh cong." : " that bai."));
                         break;
                     default:
                         break;
                 }
             }
         } catch (Exception e) {
-            System.out.println("Xoa that bai. Vui long thu lai.");
+            ColorPrinter.printlnRedText("Xoa that bai. Vui long thu lai.");
             e.printStackTrace();
         }
     }
-//            7. Chức năng reset danh sách slang words gốc.
-//            8. Chức năng random 1 slang word (On this day slang word).
-//            9. Chức năng đố vui, chương trình hiển thị 1 random slang word, với 4 đáp án cho
-//    người dùng chọn.
-//10. Chức năng đố vui, chương trình hiển thị 1 definition, với 4 slang words đáp án cho
-//    người dùng chọn
+
+    //            7. Chức năng reset danh sách slang words gốc.
+    public void resetToOriginalDictionary() {
+        try {
+            this.slangDict.resetToOriginalDictionary();
+            ColorPrinter.printlnGreenText("Reset thanh cong.");
+        } catch (Exception e) {
+            ColorPrinter.printlnRedText("Reset that bai.");
+            e.printStackTrace();
+        }
+    }
+
+    // 8. Chức năng random 1 slang word (On this day slang word).
+    public void randomASlangWord() {
+        try {
+            Map.Entry<String, ArrayList<String>> slangEntry = this.slangDict.randomASlangWord();
+            ColorPrinter.printlnGreenText("On this day slang word");
+            ColorPrinter.printlnGreenText("Slang: " + slangEntry.getKey());
+            ColorPrinter.printlnGreenText("Definitions: ");
+            printListInOrder(slangEntry.getValue());
+        } catch (Exception e) {
+            ColorPrinter.printlnRedText("Da xay ra loi he thong. Vui long thu lai.");
+            e.printStackTrace();
+        }
+    }
+
+    //  9. Chức năng đố vui, chương trình hiển thị 1 random slang word, với 4 đáp án cho
+    //    người dùng chọn.
+    public void showMiniGameOne() {
+        try {
+            /**
+             * Tạo bộ câu hỏi dành riêng cho mini game
+             *  - Random 1 slang
+             *   + Lấy nghĩa của slang đó
+             *   + Lấy các câu trả lời đánh lừa có sẵn trong bộ câu hỏi
+             *  => Câu hỏi hay, nhưng bị giới hạn trong bộ câu hỏi
+             *  => Nhưng thầy không yêu cầu câu hỏi phải chuẩn
+             *
+             *
+             * Sử dụng bộ câu hỏi hiện tại
+             *  - Random 1 slang
+             *    + Lấy nghĩa của slang đó
+             *    + Lấy nghĩa của các slang khác (được random nhưng loại trừ slang đó)
+             *
+             *
+             * -> tạo 1 class để làm mini game
+             *
+             *
+             *
+             */
+//            Map.Entry<String, ArrayList<String>> slangEntry = this.slangDict.randomASlangWord();
+//            Map.Entry<String, ArrayList<String>> slangEntry = this.slangDict.randomASlangWord();
+//            Map.Entry<String, ArrayList<String>> slangEntry = this.slangDict.randomASlangWord();
+//            Map.Entry<String, ArrayList<String>> slangEntry = this.slangDict.randomASlangWord();
+
+//            ColorPrinter.printlnGreenText("Mini Game One");
+//            ColorPrinter.printlnGreenText("What is the definition of the slang \"" +slangEntry.getKey() +"\"?");
+
+
+//            ColorPrinter.printGreenText("a) ");
+//            printListInOrder(slangEntry.getValue());
+        } catch (Exception e) {
+            ColorPrinter.printlnRedText("Da xay ra loi he thong. Vui long thu lai.");
+            e.printStackTrace();
+        }
+    }
+
+    //10. Chức năng đố vui, chương trình hiển thị 1 definition, với 4 slang words đáp án cho
+    //    người dùng chọn
+    public void showMiniGameTwo() {
+        try {
+            Map.Entry<String, ArrayList<String>> slangEntry = this.slangDict.randomASlangWord();
+            ColorPrinter.printlnGreenText("On this day slang word");
+            ColorPrinter.printlnGreenText("Slang: " + slangEntry.getKey());
+            ColorPrinter.printlnGreenText("Definitions: ");
+            printListInOrder(slangEntry.getValue());
+        } catch (Exception e) {
+            ColorPrinter.printlnRedText("Da xay ra loi he thong. Vui long thu lai.");
+            e.printStackTrace();
+        }
+    }
+
+
 }

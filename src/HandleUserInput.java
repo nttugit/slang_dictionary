@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,15 +13,31 @@ public class HandleUserInput {
         int userOption = 0;
         do {
             try {
-                System.out.print("Nhap lua chon cua ban: ");
+                System.out.print("Nhap lua chon: ");
                 userOption = scanner.nextInt();
                 scanner.nextLine();
                 if (functionIndices.contains(userOption) != true) {
-                    System.out.println("Gia tri khong hop le. Vui long nhap cac so tuong ung voi cac chuc nang co trong menu.");
+                    ColorPrinter.printlnRedText("Gia tri khong hop le. Vui long nhap cac so tuong ung voi cac chuc nang co trong menu.");
                 }
             } catch (Exception e) {
-                System.out.println("Gia tri khong hop le. Vui long nhap lai");
+                ColorPrinter.printlnRedText("Gia tri khong hop le. Vui long nhap lai");
                 scanner.nextLine();
+            }
+        } while (functionIndices.contains(userOption) != true);
+        return userOption;
+    }
+
+    public static String getUserStringInput(ArrayList<String> functionIndices) {
+        String userOption = "";
+        do {
+            try {
+                System.out.print("Nhap lua chon: ");
+                userOption = scanner.nextLine();
+                if (functionIndices.contains(userOption) != true) {
+                    ColorPrinter.printlnRedText("Gia tri khong hop le. Vui long nhap lai.");
+                }
+            } catch (Exception e) {
+                ColorPrinter.printlnRedText("Gia tri khong hop le. Vui long nhap lai");
             }
         } while (functionIndices.contains(userOption) != true);
         return userOption;

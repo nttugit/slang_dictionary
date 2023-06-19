@@ -1,21 +1,59 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
+/**
+ * Bo sung search by case insensitive
+ */
+
 public class SlangDictionary {
+    private String storageFileName;
     // Bởi vì cho thêm slang duplicate, nên một slang có nhieu definition
     HashMap<String, ArrayList<String>> data;
 
     // Danh sách các slang words đã tìm kiếm
     ArrayList<String> history;
 
-    public SlangDictionary() {
-        // Todo: Load từ file
+
+    public void loadDataFromFile(String filename) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("`");
+                if (parts.length == 2) {
+                    String slang = parts[0].trim();
+                    String[] definitionsArr = parts[1].split("\\|");
+                    ArrayList<String> definitions = new ArrayList<>(Arrays.asList(definitionsArr));
+
+                    StringBuilder definition = new StringBuilder();
+
+                    for (String def : definitions) {
+                        definition.append(def.trim()).append(" | ");
+                    }
+                    definition.setLength(definition.length() - 3); // Remove the last " | "
+                    this.data.put(slang, definitions);
+                }
+            }
+            reader.close();
+            System.out.println("Slang words loaded from file: " + filename);
+        } catch (IOException e) {
+            System.out.println("Error loading slang words from file: " + e.getMessage());
+        }
+    }
+
+    public SlangDictionary(String storageFileName) {
         this.data = new HashMap<>();
 
-        this.data.put("LOL", new ArrayList<>(Arrays.asList("Laugh out loud", "League of Legend")));
-        this.data.put("AKA", new ArrayList<>(Arrays.asList("As know as")));
-        this.data.put("NTT", new ArrayList<>(Arrays.asList("Nguyen Tat Thanh")));
-        this.data.put("NTTU", new ArrayList<>(Arrays.asList("Nguyen Tuan Tu", "Nguyen Tat Thanh University")));
-        // Todo: Cho nó lưu vào file luôn
+        this.loadDataFromFile(storageFileName);
+        // Todo: Load từ file
+//
+//        this.data.put("LOL", new ArrayList<>(Arrays.asList("Laugh out loud", "League of Legend")));
+//        this.data.put("AKA", new ArrayList<>(Arrays.asList("As know as")));
+//        this.data.put("NTT", new ArrayList<>(Arrays.asList("Nguyen Tat Thanh")));
+//        this.data.put("NTTU", new ArrayList<>(Arrays.asList("Nguyen Tuan Tu", "Nguyen Tat Thanh University")));
+//        // Todo: Cho nó lưu vào file luôn
         this.history = new ArrayList<>();
     }
 
@@ -89,4 +127,39 @@ public class SlangDictionary {
     }
 
 
+    public void resetToOriginalDictionary() {
+        /**
+         * todos:
+         * - update file (su dung backup file)
+         *   + originalData = getFromBackup();
+         *   + write file hien tai bang noi dung file backup, write(originalData)
+         *   + cap nhat this.data bang noi dung, this.data = orignalData
+         */
+    }
+
+    public Map.Entry<String, ArrayList<String>> randomASlangWord() {
+        List<String> slangList = new ArrayList<>(this.data.keySet());
+        Random random = new Random();
+        int randomIndex = random.nextInt(slangList.size());
+        String randomSlang = slangList.get(randomIndex);
+        Map.Entry<String, ArrayList<String>> entry = Map.entry(randomSlang, this.search(randomSlang));
+        return entry;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
