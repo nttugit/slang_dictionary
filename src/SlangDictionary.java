@@ -1,10 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-/**
- * Bo sung search by case insensitive
- */
-
 public class SlangDictionary {
     private String storageFileName;
     // Bởi vì cho thêm slang duplicate, nên một slang có nhieu definition
@@ -166,12 +162,6 @@ public class SlangDictionary {
         }
         return false;
     }
-
-//    public void printSlang() {
-//        for (Map.Entry<String, ArrayList<String>> entry : this.data.entrySet()) {
-//            System.out.println("Slang: " + entry.getKey() + ", Definitions: " + entry.getValue());
-//        }
-//    }
 
 
     public void resetToOriginalDictionary(String backupFileName) {

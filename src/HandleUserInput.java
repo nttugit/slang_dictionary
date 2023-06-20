@@ -10,7 +10,7 @@ public class HandleUserInput {
      * @return
      */
     public static int getUserInput(ArrayList<Integer> functionIndices) {
-        int userOption = 0;
+        int userOption = 999;
         do {
             try {
                 System.out.print("Nhap lua chon: ");

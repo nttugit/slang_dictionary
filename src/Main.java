@@ -1,14 +1,12 @@
 import java.util.*;
 
 public class Main {
-    static Scanner scanner = new Scanner(System.in);
-
     public static void main(String[] args) {
         String storageFileName = "src/slang.txt";
         String backupFileName = "src/slang_backup.txt";
 
         SlangDictionaryApp slangApp = new SlangDictionaryApp(storageFileName);
-        MiniGame miniGame = new MiniGame();
+        MiniGame miniGame = new MiniGame(storageFileName);
 
         int userOption = 0;
         do {
@@ -29,7 +27,7 @@ public class Main {
 
             // Cho user nhập lựa chọn và xử lý
             userOption = HandleUserInput.getUserInput(mainFunctionIndices);
-
+            System.out.println(userOption);
             switch (userOption) {
                 case 1:
                     slangApp.searchSlangWord();
@@ -59,8 +57,7 @@ public class Main {
                     miniGame.startMiniGameOne();
                     break;
                 case 10:
-                    ColorPrinter.printlnRedText("Mini game two dang bao tri");
-//                    slangApp.printSlangWords();
+                    miniGame.startMiniGameTwo();
                     break;
                 case 0:
                     System.out.println("Xin cam on. Hen gap lai.");

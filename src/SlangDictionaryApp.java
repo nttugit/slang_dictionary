@@ -24,7 +24,7 @@ public class SlangDictionaryApp {
 
     // 1. Tìm kiếm theo slang word.
     public void searchSlangWord() {
-        ColorPrinter.printGreenText("Nhap slang ban muon tim kiem (phan biet chu hoa va chu thuong): ");
+        ColorPrinter.printGreenText("Nhap slang ban muon tim kiem (co phan biet chu hoa va chu thuong): ");
         String slang = scanner.nextLine();
 
         List<String> result = slangDict.search(slang);
@@ -87,12 +87,14 @@ public class SlangDictionaryApp {
                         newDefinitions.addAll(Arrays.asList(addedDefinition));
                         this.slangDict.add(addedSlang, newDefinitions);
                         this.slangDict.writeSlangDictionaryIntoFile();
+                        System.out.println("Them slang word \""+addedSlang + "\" thanh cong.");
                         break;
                     case 2:
                         newDefinitions = this.slangDict.search(addedSlang);
                         newDefinitions.add(addedDefinition);
                         this.slangDict.add(addedSlang, newDefinitions);
                         this.slangDict.writeSlangDictionaryIntoFile();
+                        System.out.println("Them slang word \""+addedSlang + "\" thanh cong.");
                         break;
                 }
             } else {
@@ -100,6 +102,7 @@ public class SlangDictionaryApp {
                 newDefinitions.addAll(Arrays.asList(addedDefinition));
                 this.slangDict.add(addedSlang, newDefinitions);
                 this.slangDict.appendSlangIntoFile(addedSlang, newDefinitions);
+               ColorPrinter.printlnGreenText("Them slang word \""+addedSlang + "\" thanh cong.");
             }
         } catch (Exception e) {
             ColorPrinter.printlnRedText("Them that bai. Vui long thu lai.");
