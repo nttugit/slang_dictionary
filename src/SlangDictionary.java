@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -10,64 +8,121 @@ import java.util.*;
 public class SlangDictionary {
     private String storageFileName;
     // Bởi vì cho thêm slang duplicate, nên một slang có nhieu definition
-    HashMap<String, ArrayList<String>> data;
+    private HashMap<String, ArrayList<String>> data;
 
     // Danh sách các slang words đã tìm kiếm
-    ArrayList<String> history;
+    private ArrayList<String> history;
+    private final static String HISTORY_FILE_NAME = "src/history.txt";
 
 
-    public void loadDataFromFile(String filename) {
+    public void loadSlangDictionaryDataFromFile(String filename) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));
             String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("`");
-                if (parts.length == 2) {
-                    String slang = parts[0].trim();
-                    String[] definitionsArr = parts[1].split("\\|");
-                    ArrayList<String> definitions = new ArrayList<>(Arrays.asList(definitionsArr));
+            // Xử lý từng dòng dữ liêu
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] chunks = line.split("`");
 
+                if (chunks.length == 2) {
+                    String slang = chunks[0].trim();
+                    String[] definitionsChunks = chunks[1].split("\\|");
+
+                    ArrayList<String> definitions = new ArrayList<>(Arrays.asList(definitionsChunks));
+                    // Dùng String Build hoặc cộng chuỗi đều được
                     StringBuilder definition = new StringBuilder();
 
                     for (String def : definitions) {
-                        definition.append(def.trim()).append(" | ");
+                        definition.append(def.trim()).append("| ");
                     }
-                    definition.setLength(definition.length() - 3); // Remove the last " | "
+                    // substring
+                    definition.setLength(definition.length() - 2);
                     this.data.put(slang, definitions);
+                } else {
+                    // Dòng nào dữ liệu sai thì next
+                    continue;
                 }
             }
-            reader.close();
-            System.out.println("Slang words loaded from file: " + filename);
+            bufferedReader.close();
         } catch (IOException e) {
-            System.out.println("Error loading slang words from file: " + e.getMessage());
+            ColorPrinter.printlnRedText("Da xay ra loi khi load file. Error: " + e.getMessage());
+        }
+    }
+
+    public void writeSlangDictionaryIntoFile() {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.storageFileName))) {
+            for (Map.Entry<String, ArrayList<String>> entry : this.data.entrySet()) {
+                String slang = entry.getKey();
+                ArrayList<String> definitions = entry.getValue();
+                String writeFileContent = slang + "`";
+                for (String definition : definitions) {
+                    writeFileContent += definition.trim() + "| ";
+                }
+                writeFileContent = writeFileContent.substring(0, writeFileContent.length() - 2);
+                writeFileContent += "\n";
+                bufferedWriter.write(writeFileContent);
+            }
+        } catch (IOException e) {
+            ColorPrinter.printlnRedText("Xay ra loi trong qua trinh luu lich su xuong file." + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void appendSlangIntoFile(String slang, ArrayList<String> definitions) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.storageFileName, true))) {
+            String writeFileContent = slang + "`";
+            for (String definition : definitions) {
+                writeFileContent += definition.trim() + "| ";
+            }
+            writeFileContent = writeFileContent.substring(0, writeFileContent.length() - 2);
+            bufferedWriter.write(writeFileContent);
+            bufferedWriter.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadUserSearchedHistoryFromFile() {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(HISTORY_FILE_NAME));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String slang = line.trim();
+                this.history.add(slang);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            ColorPrinter.printlnRedText("Da xay ra loi khi load file. Error: " + e.getMessage());
+        }
+    }
+
+    // Review
+    public void writeSlangToHistoryFile(String newSlang) {
+        this.history.add(newSlang);
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(HISTORY_FILE_NAME))) {
+            for (String slang : this.history) {
+                bufferedWriter.write(slang);
+                bufferedWriter.newLine();
+            }
+        } catch (IOException e) {
+            ColorPrinter.printlnRedText("Xay ra loi trong qua trinh luu lich su xuong file." + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public SlangDictionary(String storageFileName) {
+        // Khởi tạo giá trị ban đầu của từ điển
         this.data = new HashMap<>();
-
-        this.loadDataFromFile(storageFileName);
-        // Todo: Load từ file
-//
-//        this.data.put("LOL", new ArrayList<>(Arrays.asList("Laugh out loud", "League of Legend")));
-//        this.data.put("AKA", new ArrayList<>(Arrays.asList("As know as")));
-//        this.data.put("NTT", new ArrayList<>(Arrays.asList("Nguyen Tat Thanh")));
-//        this.data.put("NTTU", new ArrayList<>(Arrays.asList("Nguyen Tuan Tu", "Nguyen Tat Thanh University")));
-//        // Todo: Cho nó lưu vào file luôn
+        this.loadSlangDictionaryDataFromFile(storageFileName);
+        this.storageFileName = storageFileName;
+        // Lấy lịch sử của user đã lưu trước đó
         this.history = new ArrayList<>();
+        this.loadUserSearchedHistoryFromFile();
     }
 
     public HashMap<String, ArrayList<String>> getData() {
         return data;
     }
 
-    public void setData(HashMap<String, ArrayList<String>> data) {
-        this.data = data;
-    }
-
-    public void setHistory(ArrayList<String> history) {
-        this.history = history;
-    }
 
     public ArrayList<String> search(String slang) {
         return this.data.get(slang);
@@ -78,7 +133,7 @@ public class SlangDictionary {
         for (Map.Entry<String, ArrayList<String>> entry : this.data.entrySet()) {
             List<String> definitions = entry.getValue();
             for (String definition : definitions) {
-                if (definition.contains(keyword)) {
+                if (definition.contains(keyword.trim())) {
                     slangList.add(entry.getKey());
                     break;
                 }
@@ -87,12 +142,9 @@ public class SlangDictionary {
         return slangList;
     }
 
-    public void saveHistory(String slang) {
-        this.history.add(slang);
-    }
 
     public ArrayList<String> getHistory() {
-        return history;
+        return this.history;
     }
 
     public boolean isExistingSlang(String slang) {
@@ -103,10 +155,9 @@ public class SlangDictionary {
         return this.data.put(slang, definitions);
     }
 
-//    public ArrayList<String> update(String slang, ArrayList<String> definitions) {
-//        return this.data.put(slang, definitions);
-//    }
-
+    public ArrayList<String> update(String slang, ArrayList<String> definitions) {
+        return this.data.put(slang, definitions);
+    }
 
     public boolean deleteSlangWord(String slang) {
         ArrayList<String> deletedSlangWords = this.data.remove(slang);
@@ -116,25 +167,31 @@ public class SlangDictionary {
         return false;
     }
 
-    public void printSlang() {
-//        HashMap<String, List<String>> data = new HashMap<>();
-//        data.put("nice",Arrays.asList("nguyen tuan tu","tuan tu", "tu"));
-//        data.put("beautiful",Arrays.asList("tu dep trai"));
+//    public void printSlang() {
+//        for (Map.Entry<String, ArrayList<String>> entry : this.data.entrySet()) {
+//            System.out.println("Slang: " + entry.getKey() + ", Definitions: " + entry.getValue());
+//        }
+//    }
 
-        for (Map.Entry<String, ArrayList<String>> entry : this.data.entrySet()) {
-            System.out.println("Slang: " + entry.getKey() + ", Definitions: " + entry.getValue());
+
+    public void resetToOriginalDictionary(String backupFileName) {
+        try (
+                BufferedReader reader = new BufferedReader(new FileReader(backupFileName));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(this.storageFileName))
+        ) {
+            this.data.clear();
+            // copy data từ backup file -> storage file
+            String line;
+            while ((line = reader.readLine()) != null) {
+                writer.write(line);
+                writer.newLine();
+            }
+            // load lai du lieu vao bien data
+            this.loadSlangDictionaryDataFromFile(backupFileName);
+        } catch (IOException e) {
+            ColorPrinter.printlnRedText("Da xay ra loi trong khi reset du lieu.");
+            e.printStackTrace();
         }
-    }
-
-
-    public void resetToOriginalDictionary() {
-        /**
-         * todos:
-         * - update file (su dung backup file)
-         *   + originalData = getFromBackup();
-         *   + write file hien tai bang noi dung file backup, write(originalData)
-         *   + cap nhat this.data bang noi dung, this.data = orignalData
-         */
     }
 
     public Map.Entry<String, ArrayList<String>> randomASlangWord() {

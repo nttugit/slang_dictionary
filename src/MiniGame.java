@@ -2,17 +2,8 @@ import java.util.*;
 
 public class MiniGame {
     Scanner scanner = new Scanner(System.in);
-
     private String result;
-
-
-    //
-//    private String firstDistractor;
-//    private String secondDistractor;
-//    private String thirdDistractor;
-
     private String content;
-
 
     public MiniGame() {
         this.content = "";
@@ -34,14 +25,19 @@ public class MiniGame {
         try {
             ArrayList<String> answerOptions = new ArrayList<>(Arrays.asList("a", "b", "c", "d"));
             ArrayList<Integer> playOptions = new ArrayList<>(Arrays.asList(1, 0));
-            String storageFileName ="src/slang.txt";
+
+            // Load dữ liệu từ file lên dictionary data
+            String storageFileName = "src/slang.txt";
+            SlangDictionary slangDict = new SlangDictionary(storageFileName);
+            if (slangDict.getData().size() < 4) {
+                ColorPrinter.printlnYellowText("So luong slang words khong du de thuc hien mini game. Vui long them vao.");
+                return;
+            }
 
             int userPlayOption = 1;
             do {
                 // Reset content khi chọn chơi lại
                 this.content = "";
-                SlangDictionary slangDict = new SlangDictionary(storageFileName);
-
                 // Random slang và đáp án tương ứng
                 HashMap<String, String> answerList = new HashMap<>();
                 int i = 0;

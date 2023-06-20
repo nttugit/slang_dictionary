@@ -4,21 +4,14 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        /**
-         * todos:
-         *  - try catch user's input:
-         *    + not an integer
-         *    + not a supported function
-         *    + viet 1 ham cho user nhap, try catch trong do
-         */
         String storageFileName = "src/slang.txt";
+        String backupFileName = "src/slang_backup.txt";
 
         SlangDictionaryApp slangApp = new SlangDictionaryApp(storageFileName);
         MiniGame miniGame = new MiniGame();
 
         int userOption = 0;
         do {
-
             System.out.println("\n===== SLANG DICTIONARY =====" +
                     "\n1. Tim kiem theo slang word" +
                     "\n2. Tim kiem theo tu khoa co trong definition" +
@@ -57,7 +50,7 @@ public class Main {
                     slangApp.deleteSlangWord();
                     break;
                 case 7:
-                    slangApp.resetToOriginalDictionary();
+                    slangApp.resetToOriginalDictionary(backupFileName);
                     break;
                 case 8:
                     slangApp.randomASlangWord();
@@ -66,7 +59,8 @@ public class Main {
                     miniGame.startMiniGameOne();
                     break;
                 case 10:
-                    slangApp.printSlangWords();
+                    ColorPrinter.printlnRedText("Mini game two dang bao tri");
+//                    slangApp.printSlangWords();
                     break;
                 case 0:
                     System.out.println("Xin cam on. Hen gap lai.");
